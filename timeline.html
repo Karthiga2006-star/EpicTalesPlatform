@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mahabharata Timeline - Epic Journey</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="timeline-page">
+
+  <header class="vintage-header">
+    <div class="header-content">
+      <div class="nav-emblem"></div>
+      <h1>Mahabharata Explorer</h1>
+      <p>Interactive Levels of the Epic</p>
+    </div>
+    <nav class="timeline-nav">
+      <a href="index.html" class="nav-link">← Return to Home</a>
+    </nav>
+  </header>
+
+  <!-- Progress Section -->
+  <div class="progress-section">
+    <div class="progress-label">
+      <span>Journey Progress</span>
+      <span id="progressPercent">0%</span>
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Levels Container -->
+  <div class="levels-container">
+    <button class="level" data-key="birth">
+      <span class="level-number">1</span>
+      <span class="level-title">Birth</span>
+    </button>
+    <button class="level" data-key="swayamvar">
+      <span class="level-number">2</span>
+      <span class="level-title">Swayamvar</span>
+    </button>
+    <button class="level" data-key="exile">
+      <span class="level-number">3</span>
+      <span class="level-title">Exile</span>
+    </button>
+    <button class="level" data-key="war">
+      <span class="level-number">4</span>
+      <span class="level-title">War</span>
+    </button>
+    <button class="level" data-key="return">
+      <span class="level-number">5</span>
+      <span class="level-title">Return</span>
+    </button>
+  </div>
+
+  <!-- Story Area -->
+  <div id="storyArea" class="story-area">
+    <div class="welcome-message">
+      <div class="welcome-icon"></div>
+      <h2>Welcome to Mahabharata Explorer!</h2>
+      <p>Select an event from the timeline above to explore the profound wisdom and dramatic turns of the world's greatest epic.</p>
+      <div class="welcome-image">
+    <img src="pic.jpeg" alt="Mahabharata">
+</div>
+    </div>
+  </div>
+
+  <script>
+    const stories = {
+  birth: {
+    title: "Birth of the Pandavas",
+    link: "https://en.wikipedia.org/wiki/Pandava",
+    short: "The Pandavas, born to King Pandu and Kunti/Madri through divine intervention, were destined to uphold dharma and lead epic battles against their cousins, the Kauravas. Yudhishthira, Bhima, Arjuna, Nakula, and Sahadeva each possessed unique qualities bestowed by their celestial fathers.",
+    video: "https://www.youtube.com/embed/RAkrfD-l9HU?si=bJSkR8BWr5nFTYlT"
+  },
+  swayamvar: {
+    title: "Draupadi's Swayamvar",
+    link: "https://en.wikipedia.org/wiki/Draupadi#Swayamvara",
+    short: "Draupadi's swayamvara attracted princes from across the kingdoms. The challenge was to string a mighty bow and shoot an arrow through a rotating target's eye. Arjuna, disguised as a Brahmin, accomplished this feat with extraordinary skill, winning Draupadi's hand and changing the course of history.",
+    video: "https://www.youtube.com/embed/1XaT1UvbkRI?si=UlezcrgFnQPUzQpb"
+  },
+  exile: {
+    title: "Exile of the Pandavas",
+    link: "https://en.wikipedia.org/wiki/Exile_of_the_Pandavas",
+    short: "After losing a rigged dice game to the Kauravas, the Pandavas were forced into 13 years of exile - 12 years in the forest and 1 year in anonymity. This period tested their resilience and taught them valuable lessons in patience, strategy, and the true meaning of dharma.",
+    video: "https://www.youtube.com/embed/ybXSPx1pAWg?si=PgHk1q6sBb-JzBng"
+  },
+  war: {
+    title: "Kurukshetra War",
+    link: "https://en.wikipedia.org/wiki/Kurukshetra_War",
+    short: "The great Kurukshetra War, fought over 18 days, pitted the Pandavas against the Kauravas. It culminated in Lord Krishna's divine guidance to Arjuna through the Bhagavad Gita, establishing eternal principles of duty, righteousness, and the nature of existence.",
+    video: "https://www.youtube.com/embed/t_5Ca14K8QY?si=vuNnz0PMRvjjOHoa"
+  },
+  return: {
+    title: "Return to Hastinapura",
+    link: "https://en.wikipedia.org/wiki/Mahabharata#After_the_war",
+    short: "After their victory, the Pandavas returned to Hastinapura and established a righteous rule. Yudhishthira became emperor and governed with wisdom and compassion, restoring dharma and justice throughout the kingdom, though the war's aftermath brought profound reflections on the cost of victory.",
+    video: "https://www.youtube.com/embed/-gdxTE5XVV0?si=zGUp55u3J435VSI_"
+  }
+};
+
+
+    const totalStories = Object.keys(stories).length;
+    const levelButtons = document.querySelectorAll(".level");
+    let currentSpeech = null;
+    let isSpeaking = false;
+    let currentStoryKey = null;
+
+    levelButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const key = btn.getAttribute("data-key");
+        loadStory(key);
+
+        // Mark levels completed
+        btn.classList.add("completed");
+      });
+    });
+
+    function loadStory(key) {
+      // Stop any ongoing speech when loading new story
+      if (isSpeaking) {
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+      }
+      
+      currentStoryKey = key;
+      const story = stories[key];
+      const area = document.getElementById("storyArea");
+      area.innerHTML = `
+        <div class="story-content">
+          <div class="content-header">
+            <h2>${story.title}</h2>
+            <div class="header-actions">
+              <button class="btn-speak" onclick="toggleSpeech('${story.short.replace(/'/g, "\\'")}')">
+                <span class="speak-icon">🔊</span>
+                <span class="speak-text">Listen to Story</span>
+              </button>
+              <a href="${story.link}" target="_blank" class="btn-wiki">
+                <span class="wiki-icon">📚</span>
+                Read More
+              </a>
+            </div>
+          </div>
+          
+          <div class="content-body">
+            <div class="story-text">
+              <h3>Sacred Narrative</h3>
+              <p>${story.short}</p>
+            </div>
+            
+            <div class="media-section">
+              <div class="wiki-container">
+                <h3>📖 Wikipedia Reference</h3>
+                <iframe src="${story.link}" loading="lazy"></iframe>
+              </div>
+              
+              <div class="video-container">
+                <h3>📺 Related Video</h3>
+                <div class="video-wrapper">
+                  <iframe width="100%" height="315" src="${story.video}" frameborder="0" allowfullscreen></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Update progress bar
+      const keys = Object.keys(stories);
+      const index = keys.indexOf(key) + 1;
+      const progress = Math.round((index / totalStories) * 100);
+      const progressBar = document.getElementById("progressBar");
+      const progressPercent = document.getElementById("progressPercent");
+      
+      progressBar.style.setProperty('--progress', `${progress}%`);
+      progressPercent.textContent = `${progress}%`;
+      
+      // Reset speech state
+      updateSpeakButton();
+    }
+
+    function toggleSpeech(text) {
+      if (isSpeaking) {
+        // Stop speaking
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+        updateSpeakButton();
+      } else {
+        // Start speaking
+        speakText(text);
+      }
+    }
+
+    function speakText(text) {
+      // Stop any ongoing speech first
+      window.speechSynthesis.cancel();
+      
+      currentSpeech = new SpeechSynthesisUtterance(text);
+      currentSpeech.lang = "en-IN";
+      currentSpeech.pitch = 0.9;
+      currentSpeech.rate = 0.9;
+      currentSpeech.volume = 1;
+      
+      // Update state when speech starts
+      currentSpeech.onstart = function() {
+        isSpeaking = true;
+        updateSpeakButton();
+      };
+      
+      // Update state when speech ends
+      currentSpeech.onend = function() {
+        isSpeaking = false;
+        updateSpeakButton();
+      };
+      
+      // Update state when speech errors
+      currentSpeech.onerror = function() {
+        isSpeaking = false;
+        updateSpeakButton();
+      };
+      
+      window.speechSynthesis.speak(currentSpeech);
+    }
+
+    function updateSpeakButton() {
+      const speakButton = document.querySelector('.btn-speak');
+      const speakIcon = document.querySelector('.speak-icon');
+      const speakText = document.querySelector('.speak-text');
+      
+      if (speakButton) {
+        if (isSpeaking) {
+          speakIcon.textContent = '⏹️';
+          speakText.textContent = 'Stop Listening';
+          speakButton.style.background = 'var(--brown-dark)';
+        } else {
+          speakIcon.textContent = '🔊';
+          speakText.textContent = 'Listen to Story';
+          speakButton.style.background = 'var(--gold)';
+        }
+      }
+    }
+
+    // Stop speech when page is closed or navigated away
+    window.addEventListener('beforeunload', function() {
+      window.speechSynthesis.cancel();
+    });
+
+    // Stop speech when clicking on new level
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.level')) {
+        if (isSpeaking) {
+          window.speechSynthesis.cancel();
+          isSpeaking = false;
+          updateSpeakButton();
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

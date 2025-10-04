@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epic Mahabharata Chronicles</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="landing">
+
+    <div class="landing-container">
+        <div class="scroll-decoration top-scroll"></div>
+
+        <!-- Title -->
+        <div class="title-section">
+            <div class="emblem">🕉</div>
+            <h1>Epic Mahabharata Chronicles</h1>
+            <div class="subtitle">Where Legends Come Alive</div>
+        </div>
+
+        <!-- Quote -->
+        <div class="quote-section">
+            <blockquote>
+                "When righteousness declines and unrighteousness prevails, I manifest myself in every age"
+                <cite>- Lord Krishna, Bhagavad Gita</cite>
+            </blockquote>
+        </div>
+
+        <!-- Video -->
+        <div class="video-container">
+            <div class="video-wrapper">
+                <video id="mainVideo" controls autoplay playsinline muted loop>
+                    <source src="video.mp4" type="video/mp4">
+                    <track src="subtitles_en.vtt" label="English" kind="subtitles" srclang="en">
+                    <track src="descriptions_en.vtt" label="English Descriptions" kind="descriptions" srclang="en">
+                    Your browser does not support the video tag.
+                </video>
+
+                <!-- Fallback message -->
+                <div class="video-fallback">
+                    <div class="fallback-content">
+                        <div class="fallback-icon">🎬</div>
+                        <h3>Experience the Epic Journey</h3>
+                        <p>The Mahabharata awaits your exploration</p>
+                        <button class="fallback-btn" onclick="tryAlternativeVideo()">Load Epic Trailer</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-overlay">
+                <span>Witness the Greatest Epic Ever Told</span>
+            </div>
+        </div>
+
+        <!-- Button -->
+        <button onclick="location.href='timeline.html'" class="enter-btn">
+            <span class="btn-text">Begin the Sacred Journey</span>
+            <span class="btn-arrow">→</span>
+        </button>
+
+        <!-- Footer -->
+        <div class="footer-note">
+            <p>Immerse yourself in the timeless saga of Dharma, Duty, and Destiny</p>
+        </div>
+
+        <div class="scroll-decoration bottom-scroll"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function tryAlternativeVideo() {
+            const videoWrapper = document.querySelector('.video-wrapper');
+            videoWrapper.innerHTML = `
+        <iframe 
+          src="https://www.youtube.com/embed/2wkmxr2Q-7E?autoplay=1&mute=1&controls=0&loop=1&playlist=2wkmxr2Q-7E&modestbranding=1&rel=0" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen
+          title="Mahabharata Epic Story">
+        </iframe>
+      `;
+        }
+
+        // Check if iframe fails to load → show fallback
+        window.addEventListener("load", () => {
+            const iframe = document.querySelector('.video-wrapper iframe');
+            if (iframe) {
+                iframe.onerror = function () {
+                    document.querySelector('.video-fallback').style.display = 'flex';
+                };
+            }
+        });
+    </script>
+</body>
+
+</html>
